@@ -1,8 +1,9 @@
 import { notification } from "antd";
 import axios from "axios";
+import moment from "moment/moment";
 import React from "react";
 
-const ModalTambahTugas = ({ getData }) => {
+const ModalEditTugas = ({ getData, editData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -11,7 +12,7 @@ const ModalTambahTugas = ({ getData }) => {
     const formEntries = Object.fromEntries(formData);
 
     const { data } = await axios
-      .post("http://localhost:3333/tugas", formEntries, {
+      .put(`http://localhost:3333/tugas/${editData.id}`, formEntries, {
         headers: {
           // Template Literal
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -32,10 +33,14 @@ const ModalTambahTugas = ({ getData }) => {
     }
   };
 
+  const formatDeadline = (deadline) => {
+    return moment(deadline).format("YYYY-MM-DD");
+  };
+
   return (
     <div
       class="modal fade"
-      id="tambahTugas"
+      id="editTugas"
       tabindex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
@@ -44,7 +49,7 @@ const ModalTambahTugas = ({ getData }) => {
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">
-              Tambah Tugas
+              Edit Tugas
             </h5>
             <button
               type="button"
@@ -64,6 +69,7 @@ const ModalTambahTugas = ({ getData }) => {
                   class="form-control"
                   id="deadline"
                   name="deadline"
+                  defaultValue={formatDeadline(editData.deadline)}
                 />
               </div>
               <div class="mb-3">
@@ -75,6 +81,7 @@ const ModalTambahTugas = ({ getData }) => {
                   id="deskripsi"
                   name="deskripsi"
                   rows="3"
+                  defaultValue={editData.deskripsi}
                 ></textarea>
               </div>
             </div>
@@ -101,4 +108,4 @@ const ModalTambahTugas = ({ getData }) => {
   );
 };
 
-export default ModalTambahTugas;
+export default ModalEditTugas;
